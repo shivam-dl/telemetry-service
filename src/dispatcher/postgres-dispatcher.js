@@ -53,7 +53,7 @@ class PostgresDispatcher extends winston.Transport {
                 }).catch((error) => {
                     client.release();
                     console.error(`Error creating table ${options.tableName}:`, error);
-                    throw e.stack;
+                    process.exit(1)
                 })
             }).catch(error => {
                 console.error('Error connecting to the database:', error);
@@ -70,9 +70,7 @@ class PostgresDispatcher extends winston.Transport {
                     return console.error('Error acquiring client:', err);
                 }
                 // Generate an array of parameterized values for the insert
-                dataToInsert.map(row => console.log("row  ", JSON.stringify(row)))
                 const values = dataToInsert.map(row => `('${row.mid}', '${level}', '${JSON.stringify(row)}', NOW())`).join(', ');
-                console.log("values ", values)
                 // Construct and execute the insert query
                 const query = `INSERT INTO ${this.options.tableName} (${fields.join(', ')}) VALUES ${values}`;
                 client.query(query, (err, result) => {
@@ -95,12 +93,10 @@ class PostgresDispatcher extends winston.Transport {
                     .query(query)
                     .then(() => {
                         client.release();
-                        this.emit('logged', msg);
                         return callback(null, true);
                     })
                     .catch((error) => {
                         client.release();
-                        this.emit('error', error.stack);
                         console.error(`Error while inserting table ${this.options.tableName}:`, error);
                         return callback(error.stack);
                     })
