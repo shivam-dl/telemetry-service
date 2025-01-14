@@ -4,7 +4,7 @@ const _ = require('lodash')
 
 const tableColumns = [
     {
-      "name": "mid",
+      "name": "id",
       "dataType": "TEXT",
       "primaryKey": true,
       "unique": true
@@ -14,7 +14,15 @@ const tableColumns = [
         "dataType": "VARCHAR",
     },
     {
-      "name": "message",
+        "name": "event_type",
+        "dataType": "VARCHAR",
+    },
+    {
+        "name": "learner_id",
+        "dataType": "VARCHAR",
+    },
+    {
+      "name": "data",
       "dataType": "JSONB"
     },
     {
@@ -61,7 +69,7 @@ class PostgresDispatcher extends winston.Transport {
     }
 
     log(level, msg, meta, callback) {
-        const fields = tableColumns.map((column) => column.name)
+        const fields = tableColumns.map((column) => column.name).filter(field => field !== 'id');
         if(this.options.dataExtract === 'true' && msg.includes('events')){
             const dataToInsert = JSON.parse(msg).events;
             
@@ -70,7 +78,10 @@ class PostgresDispatcher extends winston.Transport {
                     return console.error('Error acquiring client:', err);
                 }
                 // Generate an array of parameterized values for the insert
-                const values = dataToInsert.map(row => `('${row.mid}', '${level}', '${JSON.stringify(row)}', NOW())`).join(', ');
+                const values = dataToInsert.map(row => {
+                    const { learner_id, event_type, ...data } = row;
+                    return `('${level}', '${event_type}', '${learner_id}', '${JSON.stringify(data)}', NOW())`
+                }).join(', ');
                 // Construct and execute the insert query
                 const query = `INSERT INTO ${this.options.tableName} (${fields.join(', ')}) VALUES ${values}`;
                 client.query(query, (err, result) => {
