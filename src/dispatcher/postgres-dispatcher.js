@@ -94,7 +94,7 @@ class PostgresDispatcher extends winston.Transport {
                         callback(null, true);
                     }
                     // Close the connection pool
-                    this.pool.end();
+                    // this.pool.end();
                 });
             });
         } else {
