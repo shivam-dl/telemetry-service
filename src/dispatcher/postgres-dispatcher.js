@@ -79,8 +79,8 @@ class PostgresDispatcher extends winston.Transport {
                 }
                 // Generate an array of parameterized values for the insert
                 const values = dataToInsert.map(row => {
-                    const { learner_id, event_type, ...data } = row;
-                    return `('${level}', '${event_type}', '${learner_id}', '${JSON.stringify(data)}', NOW())`
+                    const { level: dataLevel, learner_id, event_type, ...data } = row;
+                    return `('${dataLevel ?? level}', '${event_type}', '${learner_id}', '${JSON.stringify(data)}', NOW())`
                 }).join(', ');
                 // Construct and execute the insert query
                 const query = `INSERT INTO ${this.options.tableName} (${fields.join(', ')}) VALUES ${values}`;
