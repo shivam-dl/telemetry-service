@@ -1,3 +1,5 @@
+const { getDeviceDetails } = require('../utils/device-helpers.util');
+
 const uuidv1 = require('uuid/v1'),
     request = require('request'),
     DispatcherClass = require('../dispatcher/dispatcher').Dispatcher;
@@ -12,12 +14,14 @@ class TelemetryService {
         this.dispatcher = this.config.localStorageEnabled === 'true' ? new Dispatcher(config) : undefined;
     }
     dispatch(req, res) {
+        const deviceDetails = getDeviceDetails(req);
         const message = req.body;
         message.did = req.get('x-device-id');
         message.channel = req.get('x-channel-id');
         message.pid = req.get('x-app-id');
         if (!message.mid) message.mid = uuidv1();
         message.syncts = new Date().getTime();
+        message.deviceDetails = deviceDetails;
         const data = JSON.stringify(message);
         if (this.config.localStorageEnabled === 'true' || this.config.telemetryProxyEnabled === 'true') {
             if (this.config.localStorageEnabled === 'true' && this.config.telemetryProxyEnabled !== 'true') {
