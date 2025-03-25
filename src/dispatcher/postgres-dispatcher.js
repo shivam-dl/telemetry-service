@@ -71,7 +71,7 @@ class PostgresDispatcher extends winston.Transport {
     log(level, msg, meta, callback) {
         const fields = tableColumns.map((column) => column.name).filter(field => field !== 'id');
         if(this.options.dataExtract === 'true' && msg.includes('events')){
-            const dataToInsert = JSON.parse(msg).events;
+            const {events: dataToInsert, deviceDetails} = JSON.parse(msg);
             
             return this.pool.connect((err, client, release) => {
                 if (err) {
@@ -80,7 +80,7 @@ class PostgresDispatcher extends winston.Transport {
                 // Generate an array of parameterized values for the insert
                 const values = dataToInsert.map(row => {
                     const { level: dataLevel, learner_id, event_type, ...data } = row;
-                    return `('${dataLevel ?? level}', '${event_type}', '${learner_id}', '${JSON.stringify(data)}', NOW())`
+                    return `('${dataLevel ?? level}', '${event_type}', '${learner_id}', '${JSON.stringify({...data, device_details: deviceDetails})}', NOW())`
                 }).join(', ');
                 // Construct and execute the insert query
                 const query = `INSERT INTO ${this.options.tableName} (${fields.join(', ')}) VALUES ${values}`;
