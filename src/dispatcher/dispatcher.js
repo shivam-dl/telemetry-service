@@ -3,6 +3,7 @@ const winston = require('winston');
     require('./kafka-dispatcher');
     require('./cassandra-dispatcher');
     require('./postgres-dispatcher');
+    require('./mongodb-dispatcher');
 
 const defaultFileOptions = {
     filename: 'dispatcher-%DATE%.log',
@@ -31,6 +32,9 @@ class Dispatcher {
         } else if (this.options.dispatcher === 'postgres') {
             this.logger.add(winston.transports.Postgres, this.options);
             console.log('Postgres transport enabled !!!');
+        } else if (this.options.dispatcher === 'mongodb') {
+            this.logger.add(winston.transports.MongoDB, this.options);
+            console.log('MongoDB transport enabled !!!');
         } else { // Log to console
             this.options.dispatcher = 'console'
             const config = Object.assign({json: true,stringify: (obj) => JSON.stringify(obj)}, this.options);
@@ -46,7 +50,7 @@ class Dispatcher {
     health(callback) {
         if (this.options.dispatcher === 'kafka') {
             this.logger.transports['kafka'].health(callback);
-        } else if (this.options.dispatcher === 'postgres') {
+        } else if (this.options.dispatcher === 'postgres' || this.options.dispatcher === 'postgres') {
             this.logger.transports['undefined'].health(callback);
         } else if (this.options.dispatcher === 'console') {
             callback(true)

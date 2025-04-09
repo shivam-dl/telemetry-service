@@ -1,4 +1,7 @@
 const os = require('os');
+const dotenv = require('dotenv');
+
+dotenv.config({});
 
 const envVariables = {
     level: process.env.telemetry_log_level || 'info',
@@ -25,6 +28,8 @@ const envVariables = {
     password: process.env.TELEMETRY_PG_PASSWORD || 'postgres',
     db: process.env.TELEMETRY_PG_DB || 'aml_service',
     tableName: process.env.TELEMETRY_PG_TABLENAME || 'telemetry_data',
-    dataExtract: process.env.TELEMETRY_DATAEXTRACT || 'true'
+    dataExtract: process.env.TELEMETRY_DATAEXTRACT || 'true',
+    mongoHost: process.env.TELEMETRY_MONGO_HOST || 'localhost:27017',
+    mongoDb: process.env.TELEMETRY_MONGO_DB || 'aml_service',
 }
 module.exports = envVariables;
