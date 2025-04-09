@@ -29,7 +29,9 @@ const envVariables = {
     db: process.env.TELEMETRY_PG_DB || 'aml_service',
     tableName: process.env.TELEMETRY_PG_TABLENAME || 'telemetry_data',
     dataExtract: process.env.TELEMETRY_DATAEXTRACT || 'true',
-    mongoHost: process.env.TELEMETRY_MONGO_HOST || 'localhost:27017',
-    mongoDb: process.env.TELEMETRY_MONGO_DB || 'aml_service',
+    mongodbUsername: process.env.TELEMETRY_MONGODB_USERNAME || 'dbadmin',
+    mongodbPassword: process.env.TELEMETRY_MONGODB_PASSWORD || 'dbadmin',
+    mongodbHost: process.env.TELEMETRY_MONGODB_HOST || 'localhost:27017',
+    mongodbDatabase: process.env.TELEMETRY_MONGODB_DATABASE || 'aml_service',
 }
 module.exports = envVariables;

@@ -38,8 +38,8 @@ class MongoDispatcher extends winston.Transport {
     constructor(options) {
         super();
         this.options = options;
-        
-        const connectionString = `mongodb://${options.mongoHost}/${options.mongoDb}`;
+
+        const connectionString = `mongodb://${options.mongodbUsername}:${options.mongodbPassword}@${options.mongodbHost}/${options.mongodbDatabase}`;
 
         mongoose.connect(connectionString).then(() => console.log('Connected to MongoDB successfully')).catch(error => {
             console.error('Error connecting to MongoDB:', error);
