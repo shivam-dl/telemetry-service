@@ -50,7 +50,7 @@ class Dispatcher {
     health(callback) {
         if (this.options.dispatcher === 'kafka') {
             this.logger.transports['kafka'].health(callback);
-        } else if (this.options.dispatcher === 'postgres' || this.options.dispatcher === 'postgres') {
+        } else if (this.options.dispatcher === 'postgres' || this.options.dispatcher === 'mongodb') {
             this.logger.transports['undefined'].health(callback);
         } else if (this.options.dispatcher === 'console') {
             callback(true)
