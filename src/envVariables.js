@@ -1,7 +1,4 @@
 const os = require('os');
-const dotenv = require('dotenv');
-
-dotenv.config({});
 
 const envVariables = {
     level: process.env.telemetry_log_level || 'info',
